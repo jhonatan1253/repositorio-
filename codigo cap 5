@@ -1,0 +1,133 @@
+from matplotlib import pyplot as plt
+import mysignals as sigs
+from matplotlib import style
+from scipy import signal
+import numpy as np
+#########################  5.1 Signal to convolve   ###############
+style.use('ggplot')
+f, plt_arr =plt.subplots(2,sharex=True)
+f.suptitle("Input signal and impulse response")
+plt_arr[0].plot(sigs.InputSignal_1kHz_15kHz)
+plt_arr[1].plot(sigs.Impulse_response)
+plt.show()
+
+###################  Chapter 5.2 Convolution #######################
+
+output_signal = signal.convolve(sigs.InputSignal_1kHz_15kHz,sigs.Impulse_response, mode='same')
+style.use('ggplot')
+
+f,plt_arr = plt.subplots(3,sharex=True)
+f.suptitle("Convolution")
+plt_arr[0].plot(sigs.InputSignal_1kHz_15kHz, color ='cyan')
+plt_arr[0].set_title("Input Signal")
+plt_arr[1].plot(sigs.Impulse_response, color ='blue')
+plt_arr[1].set_title("Impulse Response")
+plt_arr[2].plot(output_signal, color ='magenta')
+plt_arr[2].set_title("Output Signal")
+
+plt.show()
+
+#############################  Chapter 5.3 Deconvolution #################
+sig = np.array([0,0,0,0,1,1,1,1])
+filter = np.array([1,1,0])
+conv_result = signal.convolve(sig,filter)
+deconv_result = signal.deconvolve(conv_result,filter)
+
+print("Convolution result :")
+print(conv_result)
+print("Deconvolution result : ")
+print(deconv_result)
+
+
+#############################  Chapter 5.4 Correalation ####################3
+
+
+corr_output_signal = signal.correlate(sigs.InputSignal_1kHz_15kHz, sigs.Impulse_response,mode ='same')
+conv_output_signal = signal.convolve(sigs.InputSignal_1kHz_15kHz, sigs.Impulse_response,mode ='same')
+plt.plot(conv_output_signal)
+plt.show()
+
+
+############################   Chapter 5.6 Running Sum  ###################
+
+
+
+output_signal = np.cumsum(sigs.InputSignal_1kHz_15kHz)
+#style.use('ggplot')
+style.use('dark_background')
+f,plt_arr = plt.subplots(2,sharex=True)
+f.suptitle("Running Sum")
+
+plt_arr[0].plot(sigs.InputSignal_1kHz_15kHz,color='yellow')
+plt_arr[0].set_title("Input Signal")
+plt_arr[1].plot(output_signal,color ='magenta')
+plt_arr[1].set_title("Output Signal")
+plt.show()
+
+
+######################CODE#####################
+
+from matplotlib import pyplot as plt
+
+from matplotlib import style
+
+import mysignals as sigs
+
+def calc_running_sum(sig_src_arr,sig_dest_arr):
+    for x in range(len(sig_dest_arr)):
+        sig_dest_arr[x] = 0
+
+    for x in range(len(sig_src_arr)):
+        sig_dest_arr[x] =  sig_dest_arr[x-1]+sig_src_arr[x]
+
+    style.use('ggplot')
+
+    #style.use('dark_background')
+
+    f,plt_arr = plt.subplots(2,sharex=True)
+    f.suptitle("Running Sum")
+    plt_arr[0].plot(sig_src_arr,color='red')
+    plt_arr[0].set_title("Input Signal")
+    plt_arr[1].plot(output_signal,color ='magenta')
+    plt_arr[1].set_title("Output Signal")
+    plt.show()
+
+output_signal =[None]*320
+calc_running_sum(sigs.InputSignal_1kHz_15kHz,output_signal)
+
+
+########################    Chapter 5.7 First Difference   #######################
+
+output_signal = np.diff(sigs.InputSignal_1kHz_15kHz)
+
+style.use('ggplot')
+#style.use('dark_background')
+f,plt_arr = plt.subplots(2,sharex=True)
+f.suptitle("First Difference")
+plt_arr[0].plot(sigs.InputSignal_1kHz_15kHz,color='red')
+plt_arr[0].set_title("Input Signal")
+plt_arr[1].plot(output_signal,color ='magenta')
+plt_arr[1].set_title("Output Signal")
+plt.show()
+
+########CODE###########
+
+
+def calc_first_difference(sig_src_arr,sig_dest_arr):
+    for x in range(len(sig_dest_arr)):
+        sig_dest_arr[x] =0
+
+    for x in range(len(sig_src_arr)):
+        sig_dest_arr[x] = sig_src_arr[x] - sig_src_arr[x-1]
+
+    style.use('ggplot')
+    #style.use('dark_background')
+    f,plt_arr = plt.subplots(2,sharex=True)
+    f.suptitle("First Difference")
+    plt_arr[0].plot(sig_src_arr,color='red')
+    plt_arr[0].set_title("Input Signal")
+    plt_arr[1].plot(sig_dest_arr,color ='magenta')
+    plt_arr[1].set_title("Output Signal")
+    plt.show()
+output_signal =[None]*320
+calc_first_difference(sigs.InputSignal_1kHz_15kHz,output_signal)
